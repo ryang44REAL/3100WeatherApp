@@ -9,8 +9,8 @@
     <title>The Weather App</title>
 
     <!-- https://stackoverflow.com/questions/18301745/how-to-set-up-a-favicon -->
-    <link rel="apple-touch-icon" type="image/png" href="images/appiconWeather.png">
-    <link rel="icon" type="image/png" href="images/appiconWeather.png">
+    <link rel="apple-touch-icon" type="image/png" href="images/appiconWeather.png" alt="blue weather app icon">
+    <link rel="icon" type="image/png" href="images/appiconWeather.png" alt="blue weather app icon">
     
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -26,20 +26,20 @@
                 <div id="txtFail"></div>
 
                 <!--all the below stuff should show up if allowed geolocation tracking -->
-                <div id="txtClock" class="d-flex justify-content-start" style="color:darkgrey"></div>
+                <div id="txtClock" class="d-flex justify-content-start" style="color:dimgrey"></div>
 
                 <br>
                 <br>
                 <h1 class="text-center" id="iconWeather" style="color:dodgerblue"></h1>
                 <div id="txtConditionStatement"></div>
                 
-                <div id="txtDate" class="text-center" style="color:darkgrey"></div>
+                <div id="txtDate" class="text-center" style="color:dimgrey"></div>
 
                 <br>
                 <hr style="border-top:4px solid #acacac">
                 <div class="d-flex justify-content-center text-center mt-4"> <!-- trying to make the temperature and humidity display show up horizontally closer together... https://getbootstrap.com/docs/4.0/layout/grid/-->
                     <div id="iconTempDisplay" class="col-6" style="color:firebrick"></div>
-                    <div id="iconHumidDisplay" class="col-6" style="color:darkorange"></div>
+                    <div id="iconHumidDisplay" class="col-6" style="color:rgb(203, 111, 0)"></div>
                 </div>
                 
             </div>
@@ -74,7 +74,7 @@
 
             const meteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${meteoLat}&longitude=${meteoLong}&hourly=temperature_2m,relative_humidity_2m,is_day,weather_code&temperature_unit=fahrenheit&timezone=auto`
 
-            console.log(meteoUrl)
+            //console.log(meteoUrl)
 
             //fetch the openmeteo url that we got from above 
             fetch(meteoUrl)
@@ -123,52 +123,52 @@
                     conditionStatement = "Part Cloudy"
                     if (maybeDay == 1) //its day
                     {
-                        iconConditionHTML = '<i class="bi bi-cloud-sun-fill"></i>'                        
+                        iconConditionHTML = '<i class="bi bi-cloud-sun-fill" aria-hidden="true"></i>'                        
                     }
                     else //its night 
                     {
-                        iconConditionHTML = '<i class="bi bi-cloud-moon-fill"></i>'
+                        iconConditionHTML = '<i class="bi bi-cloud-moon-fill" aria-hidden="true"></i>'
                     }
                 }
                 else if (currentCondition == 3) // cloudy
                 {
                     conditionStatement = "Cloudy"
-                    iconConditionHTML = '<i class="bi bi-cloudy-fill"></i>'
+                    iconConditionHTML = '<i class="bi bi-cloudy-fill" aria-hidden="true"></i>'
                 }
                 else if (currentCondition == 45 || currentCondition == 48) // fog
                 {
                     conditionStatement = "Foggy"
-                    iconConditionHTML = '<i class="bi bi-cloud-fog2-fill"></i>'
+                    iconConditionHTML = '<i class="bi bi-cloud-fog2-fill" aria-hidden="true"></i>'
                 }
                 else if (currentCondition == 51 || currentCondition == 53 || currentCondition == 55 || currentCondition == 56 || currentCondition == 57) //drizzle
                 {
                     conditionStatement = "Drizzling"
-                    iconConditionHTML = '<i class="bi bi-cloud-drizzle-fill"></i>'
+                    iconConditionHTML = '<i class="bi bi-cloud-drizzle-fill" aria-hidden="true"></i>'
                 }
                 else if(currentCondition == 61 || currentCondition == 63 || currentCondition == 65 || currentCondition == 66 || currentCondition == 67 || currentCondition == 80 || currentCondition == 81 || currentCondition == 82) //rain
                 {
                     conditionStatement = "Raining"
-                    iconConditionHTML = '<i class="bi bi-cloud-rain-heavy-fill"></i>'
+                    iconConditionHTML = '<i class="bi bi-cloud-rain-heavy-fill" aria-hidden="true"></i>'
                 }
                 else if(currentCondition == 71 || currentCondition == 73 || currentCondition == 75 || currentCondition == 77 || currentCondition == 85 || currentCondition == 86) //snow
                 {
                     conditionStatement = "Snowing"
-                    iconConditionHTML = '<i class="bi bi-cloud-snow-fill"></i>'
+                    iconConditionHTML = '<i class="bi bi-cloud-snow-fill" aria-hidden="true"></i>'
                 }
                 else if (currentCondition == 95) //thunderstorm
                 {
                     conditionStatement = "Thunderstorm"
-                    iconConditionHTML = '<i class="bi bi-cloud-lightning-rain-fill"></i>'
+                    iconConditionHTML = '<i class="bi bi-cloud-lightning-rain-fill" aria-hidden="true"></i>'
                 }
                 else if (currentCondition == 96 || currentCondition == 99) //thunderstorm with hail
                 {
                     conditionStatement = "Thunderstorm with Hail"
-                    iconConditionHTML = '<i class="bi bi-cloud-lightning-rain-fill"></i><i class="bi bi-cloud-snow-fill"></i>'
+                    iconConditionHTML = '<i class="bi bi-cloud-lightning-rain-fill"></i><i class="bi bi-cloud-snow-fill" aria-hidden="true"></i>'
                 }
                 else //shouldnt happen (mystery)
                 {
                     conditionStatement = "---"
-                    iconConditionHTML = '<i class="bi bi-sun-fill display-1"></i>'
+                    iconConditionHTML = '<i class="bi bi-sun-fill display-1" aria-hidden="true"></i>'
                 }
 
                 //cuts up date to year/month/day because i think openmeteo might be european 

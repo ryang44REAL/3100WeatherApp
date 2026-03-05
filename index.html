@@ -7,6 +7,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes"> 
     <meta name="apple-mobile-web-app-status-bar-style" content="black"> 
     <title>The Weather App</title>
+    <link rel="apple-touch-icon" href="../The Weather App/images/appiconWeather.png"> 
+
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -310,8 +312,17 @@
 </html>
 
 <!-- 
-    Gemini AI by Google was used in attempts to find an API-less geolocator, to which it brought me to the two links above with the
-    apparently built-in geolocator API built into most common websites. whoops. 
+    Gemini AI by Google was used to create the app icon for the mobile app with this prompt: 
+    "Can you generate a simple and modern blue weather icon for a mobile weather app?"
+    "Can you remove the white background." 
 
+    Additionally, I asked Gemini about the functionality of this block of code given by the pdf:
 
+    <link rel="apple-touch-icon" href="images/apple-touch-icon-iphone60x60.png"> 
+    <link rel="apple-touch-icon" sizes="60x60" href="images/apple-touchicon-ipad-76x76.png"> 
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touchicon-iphone-retina-120x120.png"> 
+    <link rel="apple-touch-icon" sizes="144x144" href="images/apple-touchicon-ipad-retina-152x152.png">
+
+    and the explanation given was that the above was "a classic snippet of "legacy" mobile optimization" and that I no longer
+    had to specify the sizes, thus I deleted the bottom 3 lines and "sizes" from my head. 
 -->

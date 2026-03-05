@@ -276,22 +276,23 @@
                 //display me the temperature!
                 document.querySelector('#iconTempDisplay').innerHTML = 
                 `
-                    <h1>
-                        <i class="bi bi-thermometer-half"></i>
-                    </h1>
                     <h5>
                          ${currentTemp}°F
                     </h5>
+                    <h1>
+                        <i class="bi bi-thermometer-half"></i>
+                    </h1>
+
                 `
                 //display me the humidity!
                 document.querySelector('#iconHumidDisplay').innerHTML = 
                 `
-                    <h1>
-                        <i class="bi bi-moisture"></i> 
-                    </h1>
                     <h5>
                         Humidity: ${currentHumidity}%
                     </h5>
+                    <h1>
+                        <i class="bi bi-moisture"></i> 
+                    </h1>
                 `
             })
         }

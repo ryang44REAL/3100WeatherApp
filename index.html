@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes"> 
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"> 
+    <title>The Weather App</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+</head>
+<body id="body" style="background-color: lightskyblue;">
+    <div class="d-flex justify-content-center min-vh-100 align-items-center col-12 pb-5">
+        <!-- Weather Card -->
+        <div class="card col-sm-11 col-md-6 col-lg-5" id="conditionCard">
+            <div class="card-body">
+                <!-- when they don't allow geolocation tracking-->
+                <div id="txtFail"></div>
+
+                <!--all the below stuff should show up if allowed geolocation tracking -->
+                <div id="txtClock" class="d-flex justify-content-start" style="color:darkgrey"></div>
+
+                <h1 class="text-center" id="iconWeather" style="color:dodgerblue"></h1>
+                <div id="txtConditionStatement"></div>
+                
+                <div id="txtDate" class="text-center" style="color:darkgrey"></div>
+
+                <br>
+                <hr style="border-top:4px solid #acacac">
+                <div class="d-flex justify-content-center text-center mt-4"> <!-- trying to make the temperature and humidity display show up horizontally closer together... https://getbootstrap.com/docs/4.0/layout/grid/-->
+                    <div id="iconTempDisplay" class="col-6" style="color:firebrick"></div>
+                    <div id="iconHumidDisplay" class="col-6" style="color:darkorange"></div>
+                </div>
+                
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <script>
+        //attempts to get the user's geolocation so that we can plug into openmeteo later 
+        if (navigator.geolocation)
+        {
+            navigator.geolocation.getCurrentPosition(success, error) //https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition
+        }
+
+        //if they allow 
+        function success(pos)
+        {
+            //grab latitude and longitude
+            let latitude = pos.coords.latitude
+            let longitude = pos.coords.longitude
+
+            //trimming the places after decimal point to be at 4 places because it seems that openmeteo does 4 places after decimal
+            let meteoLat = latitude.toFixed(4) //https://stackoverflow.com/questions/4256030/limit-the-amount-of-number-shown-after-a-decimal-place-in-javascript
+            let meteoLong = longitude.toFixed(4)
+
+            //console.log(`Location found: ${meteoLat}, ${meteoLong}`)
+
+            const meteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${meteoLat}&longitude=${meteoLong}&hourly=temperature_2m,relative_humidity_2m,is_day,weather_code&temperature_unit=fahrenheit&timezone=auto`
+
+            console.log(meteoUrl)
+
+            //fetch the openmeteo url that we got from above 
+            fetch(meteoUrl)
+            .then(response =>{ //make sure that URL is valid
+                if(!response.ok){
+                    throw new Error('Could not fetch Weather API.')
+                }
+                return response.json() //if it is valid, pass it on to the next .then as a json
+            })
+            .then(data => //data holds our json!
+            {   
+                //me googling how to grab times on javascript: https://www.geeksforgeeks.org/javascript/how-to-get-current-time-in-javascript/
+                let now = new Date()
+                //console.log(now)
+
+                let numHourNow = now.getHours() //these are grabbed as nums, NOT STRINGS
+                let numMinuteNow = now.getMinutes()
+
+                //openMeteo stuff is counted through hours im pretty sure so we use the numHourNow from above to find the correct values for current time
+                let currentDate = data.hourly.time[numHourNow]
+                let currentTemp = data.hourly.temperature_2m[numHourNow]
+                let currentHumidity = data.hourly.relative_humidity_2m[numHourNow]
+                let maybeDay = data.hourly.is_day[numHourNow] //1 for day 0 for night
+                let currentCondition = data.hourly.weather_code[numHourNow]
+
+                //the currentCondition follows a sort of numeric code:
+                let conditionStatement = ""
+                let iconConditionHTML = ""
+
+                if (currentCondition == 0) //clear
+                {
+                    conditionStatement = "Clear Skies"
+
+                    if (maybeDay == 1) //its day
+                    {
+                        iconConditionHTML = '<i class="bi bi-sun-fill display-1"></i>'                        
+                    }
+                    else //its night 
+                    {
+                        iconConditionHTML = '<i class="bi bi-moon-stars-fill"></i>'
+                    }
+                    
+                }
+                else if (currentCondition == 1 || currentCondition == 2) //part cloud
+                {
+                    conditionStatement = "Part Cloudy"
+                    if (maybeDay == 1) //its day
+                    {
+                        iconConditionHTML = '<i class="bi bi-cloud-sun-fill"></i>'                        
+                    }
+                    else //its night 
+                    {
+                        iconConditionHTML = '<i class="bi bi-cloud-moon-fill"></i>'
+                    }
+                }
+                else if (currentCondition == 3) // cloudy
+                {
+                    conditionStatement = "Cloudy"
+                    iconConditionHTML = '<i class="bi bi-cloudy-fill"></i>'
+                }
+                else if (currentCondition == 45 || currentCondition == 48) // fog
+                {
+                    conditionStatement = "Foggy"
+                    iconConditionHTML = '<i class="bi bi-cloud-fog2-fill"></i>'
+                }
+                else if (currentCondition == 51 || currentCondition == 53 || currentCondition == 55 || currentCondition == 56 || currentCondition == 57) //drizzle
+                {
+                    conditionStatement = "Drizzling"
+                    iconConditionHTML = '<i class="bi bi-cloud-drizzle-fill"></i>'
+                }
+                else if(currentCondition == 61 || currentCondition == 63 || currentCondition == 65 || currentCondition == 66 || currentCondition == 67 || currentCondition == 80 || currentCondition == 81 || currentCondition == 82) //rain
+                {
+                    conditionStatement = "Raining"
+                    iconConditionHTML = '<i class="bi bi-cloud-rain-heavy-fill"></i>'
+                }
+                else if(currentCondition == 71 || currentCondition == 73 || currentCondition == 75 || currentCondition == 77 || currentCondition == 85 || currentCondition == 86) //snow
+                {
+                    conditionStatement = "Snowing"
+                    iconConditionHTML = '<i class="bi bi-cloud-snow-fill"></i>'
+                }
+                else if (currentCondition == 95) //thunderstorm
+                {
+                    conditionStatement = "Thunderstorm"
+                    iconConditionHTML = '<i class="bi bi-cloud-lightning-rain-fill"></i>'
+                }
+                else if (currentCondition == 96 || currentCondition == 99) //thunderstorm with hail
+                {
+                    conditionStatement = "Thunderstorm with Hail"
+                    iconConditionHTML = '<i class="bi bi-cloud-lightning-rain-fill"></i><i class="bi bi-cloud-snow-fill"></i>'
+                }
+                else //shouldnt happen (mystery)
+                {
+                    conditionStatement = "---"
+                    iconConditionHTML = '<i class="bi bi-sun-fill display-1"></i>'
+                }
+
+                //cuts up date to year/month/day because i think openmeteo might be european 
+                let txtCurrentYear = currentDate.substring(0,4)
+                let currentMonth = currentDate.substring(5,7)
+
+                let txtMonthName = ""; //gonna transfer theres numbers to month names for readability... switch cases work on javascript too!
+                switch (currentMonth) {
+                    case "01":
+                        txtMonthName = "January"
+                        break
+                    case "02":
+                        txtMonthName = "February"
+                        break
+                    case "03":
+                        txtMonthName = "March"
+                        break
+                    case "04":
+                        txtMonthName = "April"
+                        break
+                    case "05":
+                        txtMonthName = "May"
+                        break
+                    case "06":
+                        txtMonthName = "June"
+                        break
+                    case "07":
+                        txtMonthName = "July"
+                        break
+                    case "08":
+                        txtMonthName = "August"
+                        break
+                    case "09":
+                        txtMonthName = "September"
+                        break
+                    case "10":
+                        txtMonthName = "October"
+                        break
+                    case "11":
+                        txtMonthName = "November"
+                        break
+                    case "12":
+                        txtMonthName = "December"
+                        break
+                    default:
+                        txtMonthName = "---"; //if everything goes right this should NOT ever show up 
+                }
+                let txtCurrentDay = currentDate.substring(8,10)
+
+                //checks if its am or pm 
+                let amPM = ""
+                if (numHourNow >= 12)
+                {
+                    amPM = "PM"
+                }
+                else
+                {
+                    amPM = "AM"
+                }
+
+                //if minutes are <10 they show up as 00:x PM/AM instead, so this just appends a 0 to the front instead for 00:0x PM/AM
+                if(numMinuteNow < 10)
+                {
+                    numMinuteNow = '0' + numMinuteNow
+                }
+
+                //i just dont like military time
+                if (numHourNow > 12)
+                {
+                    numHourNow -= 12
+                }
+                //console.log(numHourNow)
+
+                //changes the background color to bg-dark if its night!
+                if(maybeDay == 0)
+                {
+                    document.querySelector('#body').removeAttribute("style")
+                    document.querySelector('#body').setAttribute("class", "bg-dark")
+                }
+
+                //display me the date!
+                document.querySelector('#txtClock').innerHTML = 
+                `
+                    <div class="text-center">
+                        ${numHourNow}:${numMinuteNow} ${amPM}
+                    </div>
+                `
+                //display me the condition icon!
+                document.querySelector('#iconWeather').innerHTML = iconConditionHTML;
+
+                //display me the condition statement!
+                document.querySelector('#txtConditionStatement').innerHTML = 
+                `
+                    <h1 class="text-center">
+                        ${conditionStatement}
+                    </h1>
+                `
+                //display me the date!
+                document.querySelector('#txtDate').innerHTML = 
+                `
+                    <h5>
+                        ${txtMonthName} ${txtCurrentDay}, ${txtCurrentYear} 
+                    </h5>
+                `
+                //display me the temperature!
+                document.querySelector('#iconTempDisplay').innerHTML = 
+                `
+                    <h1>
+                        <i class="bi bi-thermometer-half"></i>
+                    </h1>
+                    <h5>
+                         ${currentTemp}°F
+                    </h5>
+                `
+                //display me the humidity!
+                document.querySelector('#iconHumidDisplay').innerHTML = 
+                `
+                    <h1>
+                        <i class="bi bi-moisture"></i> 
+                    </h1>
+                    <h5>
+                        Humidity: ${currentHumidity}%
+                    </h5>
+                `
+            })
+        }
+
+        //if they dont allow... :(
+        function error(err) 
+        {
+            console.log(`Location access denied.`)
+            document.querySelector('#txtFail').innerHTML = 
+            `
+                <h1>
+                    Unable to fetch weather for your current time and location. 
+                </h1>
+            `
+        }
+
+
+    </script>
+
+</body>
+</html>
+
+<!-- 
+    Gemini AI by Google was used in attempts to find an API-less geolocator, to which it brought me to the two links above with the
+    apparently built-in geolocator API built into most common websites. whoops. 
+
+
+-->

@@ -18,9 +18,13 @@
 
 </head>
 <body id="body" style="background-color: lightskyblue;">
-    <div class="d-flex justify-content-center min-vh-100 align-items-center col-12 pb-5 min-vh-100">
+    <div class="d-flex flex-column justify-content-center min-vh-100 align-items-center col-12 min-vh-100">
+        <!-- Pokemon PNGs... pngs are sourced from PokemonDB! -->
+        <div id="pngPKMN" class="col-md-6 col-lg-5 col-10 text-end mt-5 align-items-end">
+        </div>
+
         <!-- Weather Card -->
-        <div class="card col-md-6 col-lg-5 col-10" id="conditionCard">
+        <div class="card col-md-6 col-lg-5 col-10 text-center " id="conditionCard">
             <div class="card-body">
                 <!-- when they don't allow geolocation tracking-->
                 <div id="txtFail"></div>
@@ -48,7 +52,9 @@
             </div>
         </div>
 
-
+        <footer class="justify-content-between align-items-end mt-auto col-md-6 col-lg-5 col-10 text-center">
+            <p style="color:rgb(31, 128, 31)">Weather API in courtesy of <a href="https://open-meteo.com/">Open Meteo</a> under the 4.0 Attribution International License</p>
+        </footer>
     </div>
 
 
@@ -103,6 +109,7 @@
                 let maybeDay = data.hourly.is_day[numHourNow] //1 for day 0 for night
                 let currentCondition = data.hourly.weather_code[numHourNow]
 
+                //added unique pokemon pngs to weather conditions... gotta catch em all!
                 //the currentCondition follows a sort of numeric code:
                 let conditionStatement = ""
                 let iconConditionHTML = ""
@@ -113,11 +120,20 @@
 
                     if (maybeDay == 1) //its day
                     {
-                        iconConditionHTML = '<i class="bi bi-sun-fill display-1"></i>'                        
+                        iconConditionHTML = '<i class="bi bi-sun-fill display-1"></i>'
+                        document.querySelector('#pngPKMN').innerHTML += 
+                        `
+                            <a href="https://pokemondb.net/pokedex/castform"><img src="https://img.pokemondb.net/sprites/sun-moon/normal/castform-sunny.png" alt="Castform Sunny" style="height: 75px; width: auto; object-fit: contain"></a>
+                        `                        
+                        //https://stackoverflow.com/questions/3029422/how-to-auto-resize-an-image-while-maintaining-aspect-ratio for sizing reference
                     }
                     else //its night 
                     {
                         iconConditionHTML = '<i class="bi bi-moon-stars-fill"></i>'
+                        document.querySelector('#pngPKMN').innerHTML += 
+                        `
+                            <a href="https://pokemondb.net/pokedex/umbreon"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/umbreon.png" alt="Umbreon" style="height: 75px; width: auto; object-fit: contain"></a>
+                        `   
                     }
                     
                 }
@@ -126,47 +142,83 @@
                     conditionStatement = "Partly Cloudy"
                     if (maybeDay == 1) //its day
                     {
-                        iconConditionHTML = '<i class="bi bi-cloud-sun-fill" aria-hidden="true"></i>'                        
+                        iconConditionHTML = '<i class="bi bi-cloud-sun-fill" aria-hidden="true"></i>' 
+                        document.querySelector('#pngPKMN').innerHTML += 
+                        `
+                            <a href="https://pokemondb.net/pokedex/swablu"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/swablu.png" alt="Swablu" style="height: 75px; width: auto; object-fit: contain"></a>
+                        `                       
                     }
                     else //its night 
                     {
                         iconConditionHTML = '<i class="bi bi-cloud-moon-fill" aria-hidden="true"></i>'
+                        document.querySelector('#pngPKMN').innerHTML += 
+                        `
+                            <a href="https://pokemondb.net/pokedex/drifloon"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/drifloon.png" alt="Drifloon" style="height: 75px; width: auto; object-fit: contain"></a>
+                        `
                     }
                 }
                 else if (currentCondition == 3) // cloudy
                 {
                     conditionStatement = "Cloudy"
                     iconConditionHTML = '<i class="bi bi-cloudy-fill" aria-hidden="true"></i>'
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/whimsicott"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/whimsicott.png" alt="Whimsicott" style="height: 75px; width: auto; object-fit: contain"></a>
+                    `
                 }
                 else if (currentCondition == 45 || currentCondition == 48) // fog
                 {
                     conditionStatement = "Foggy"
                     iconConditionHTML = '<i class="bi bi-cloud-fog2-fill" aria-hidden="true"></i>'
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/weezing"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/weezing.png" alt="Weezing" style="height: 75px; width: auto; object-fit: contain"></a>
+                    `
                 }
                 else if (currentCondition == 51 || currentCondition == 53 || currentCondition == 55 || currentCondition == 56 || currentCondition == 57) //drizzle
                 {
                     conditionStatement = "Drizzling"
                     iconConditionHTML = '<i class="bi bi-cloud-drizzle-fill" aria-hidden="true"></i>'
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/lotad"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/lotad.png" alt="Lotad" style="height: 75px; width: auto; object-fit: contain"></a>
+                    `  
                 }
                 else if(currentCondition == 61 || currentCondition == 63 || currentCondition == 65 || currentCondition == 66 || currentCondition == 67 || currentCondition == 80 || currentCondition == 81 || currentCondition == 82) //rain
                 {
                     conditionStatement = "Raining"
                     iconConditionHTML = '<i class="bi bi-cloud-rain-heavy-fill" aria-hidden="true"></i>'
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/castform"><img src="https://img.pokemondb.net/sprites/sun-moon/normal/castform-rainy.png" alt="Castform Rainy" style="height: 75px; width: auto; object-fit: contain"></a>
+                    `  
                 }
                 else if(currentCondition == 71 || currentCondition == 73 || currentCondition == 75 || currentCondition == 77 || currentCondition == 85 || currentCondition == 86) //snow
                 {
                     conditionStatement = "Snowing"
                     iconConditionHTML = '<i class="bi bi-cloud-snow-fill" aria-hidden="true"></i>'
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/castform"><img src="https://img.pokemondb.net/sprites/sun-moon/normal/castform-snowy.png" alt="Castform Snowy" style="height: 75px; width: auto; object-fit: contain"></a>
+                    `  
                 }
                 else if (currentCondition == 95) //thunderstorm
                 {
                     conditionStatement = "Thunderstorm"
                     iconConditionHTML = '<i class="bi bi-cloud-lightning-rain-fill" aria-hidden="true"></i>'
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/thundurus"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/thundurus-incarnate.png" alt="Thundurus" style="height: 75px; width: auto; object-fit: contain"></a>
+                    `  
                 }
                 else if (currentCondition == 96 || currentCondition == 99) //thunderstorm with hail
                 {
                     conditionStatement = "Thunderstorm with Hail"
                     iconConditionHTML = '<i class="bi bi-cloud-lightning-rain-fill"></i><i class="bi bi-cloud-snow-fill" aria-hidden="true"></i>'
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/kyurem"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/kyurem-black.png" alt="Kyurem Black" style="height: 75px; width: auto; object-fit: contain"></a>
+                    ` 
                 }
                 else //shouldnt happen (mystery)
                 {
@@ -245,11 +297,31 @@
                 }
                 //console.log(numHourNow)
 
-                //changes the background color to bg-dark if its night!
+                //special easter egg pokemon at 1:51 am or pm!
+                if (numHourNow == 1 && numMinuteNow == 51)
+                {
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/mew"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/mew.png" alt="Mew" style="height: 75px; width: auto; object-fit: contain"></a>
+                    `                    
+                }
+
+                //changes the background color to bg-dark if its night! Also, adds either Lunala or Solgaleo depending on if its day or night!
                 if(maybeDay == 0)
                 {
                     document.querySelector('#body').removeAttribute("style")
                     document.querySelector('#body').setAttribute("class", "bg-dark")
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/lunala"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/lunala.png" alt="Lunala" style="height: 75px; width: auto; object-fit: contain"></a>
+                    `
+                }
+                else
+                {
+                    document.querySelector('#pngPKMN').innerHTML += 
+                    `
+                        <a href="https://pokemondb.net/pokedex/solgaleo"><img src="https://img.pokemondb.net/sprites/scarlet-violet/normal/solgaleo.png" alt="Solgaleo" style="height: 75px; width: auto; object-fit: contain"></a>
+                    ` 
                 }
 
                 //display me the date!
